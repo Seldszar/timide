@@ -1,0 +1,40 @@
+{
+  "name": "timide",
+  "version": "0.0.0-development",
+  "author": "Alexandre Breteau <contact@seldszar.fr> (https://seldszar.fr)",
+  "description": "Yet another resumable timer",
+  "repository": "seldszar/timide",
+  "license": "MIT",
+  "scripts": {
+    "test": "xo"
+  },
+  "files": [
+    "index.d.ts",
+    "index.js"
+  ],
+  "dependencies": {
+    "emittery": "^0.7.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "semantic-release": "^17.1.1",
+    "xo": "^0.33.0"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "xo --fix"
+  }
+}
