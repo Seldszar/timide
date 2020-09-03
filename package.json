@@ -6,7 +6,7 @@
   "repository": "seldszar/timide",
   "license": "MIT",
   "scripts": {
-    "test": "xo"
+    "test": "xo && ava"
   },
   "files": [
     "index.d.ts",
@@ -18,9 +18,11 @@
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^9.1.2",
+    "ava": "^3.12.1",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "semantic-release": "^17.1.1",
+    "sinon": "^9.0.3",
     "xo": "^0.33.0"
   },
   "commitlint": {
