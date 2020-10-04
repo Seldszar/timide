@@ -2,6 +2,14 @@
 
 > Yet another resumable timer
 
+## Table of Contents
+
+- [Install](#install)
+- [Usage](#usage)
+- [API](#api)
+- [Author](#author)
+- [License](#license)
+
 # Install
 
 ```bash
@@ -44,3 +52,15 @@ timer.seek(20000);
 // Resets the timer
 timer.reset();
 ```
+
+## API
+
+See the [declaration file](./index.d.ts).
+
+## Author
+
+Alexandre Breteau - [@0xSeldszar](https://twitter.com/0xSeldszar)
+
+## License
+
+MIT © [Alexandre Breteau](https://seldszar.fr)
