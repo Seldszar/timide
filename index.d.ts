@@ -17,12 +17,12 @@ export interface TimerOptions {
 	interval?: number;
 }
 
-interface EventDataMap {
+interface TimerEventData {
 	state: TimerState;
 	time: number;
 }
 
-export class Timer extends Emittery.Typed<EventDataMap> {
+export class Timer extends Emittery<TimerEventData> {
 	/**
 	 * The current state.
 	 */

@@ -14,7 +14,7 @@ function updateState(instance, state) {
 }
 
 function startTicker(instance) {
-	if (instance.interval === Infinity || intervals.has(instance)) {
+	if (instance.interval === Number.POSITIVE_INFINITY || intervals.has(instance)) {
 		return;
 	}
 

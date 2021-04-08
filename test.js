@@ -47,7 +47,7 @@ test('should emit `time` event', async t => {
 
 test('should emit `state` event', async t => {
 	const timer = new Timer({
-		interval: Infinity
+		interval: Number.POSITIVE_INFINITY
 	});
 
 	const promise = new Promise(resolve => {

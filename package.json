@@ -6,6 +6,7 @@
   "repository": "seldszar/timide",
   "license": "MIT",
   "scripts": {
+    "prepare": "husky install",
     "test": "xo && ava"
   },
   "files": [
@@ -13,30 +14,24 @@
     "index.js"
   ],
   "dependencies": {
-    "emittery": "^0.7.1"
+    "emittery": "^0.8.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^11.0.0",
+    "@commitlint/cli": "^12.1.1",
+    "@commitlint/config-conventional": "^12.1.1",
     "ava": "^3.12.1",
-    "husky": "^4.2.5",
+    "husky": "^6.0.0",
     "lint-staged": "^10.2.11",
     "semantic-release": "^17.1.1",
-    "sinon": "^9.0.3",
-    "xo": "^0.35.0"
+    "sinon": "^10.0.1",
+    "xo": "^0.38.2"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
-    "*.{d.ts,js}": "xo --fix"
+    "*.{js,ts}": "xo --fix"
   }
 }
