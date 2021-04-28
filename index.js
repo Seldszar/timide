@@ -3,7 +3,16 @@ const Emittery = require('emittery');
 const intervals = new WeakMap();
 
 function getTime(instance, absolute) {
-	return (absolute ? Date.now() - instance.state[1] : 0) + instance.state[2];
+	switch (instance.direction) {
+		case 'down':
+			return (absolute ? instance.state[1] - Date.now() : 0) - instance.state[2];
+
+		case 'up':
+			return (absolute ? Date.now() - instance.state[1] : 0) + instance.state[2];
+
+		default:
+			return 0;
+	}
 }
 
 function updateState(instance, state) {
@@ -65,6 +74,7 @@ class Timer extends Emittery {
 	constructor(options = {}) {
 		super();
 
+		this.direction = options.direction || 'up';
 		this.state = options.state || [false, 0, 0];
 		this.interval = options.interval || 100;
 

@@ -1,8 +1,15 @@
 import Emittery from 'emittery';
 
+export type TimerDirection = 'down' | 'up';
 export type TimerState = [boolean, number, number];
 
 export interface TimerOptions {
+	/**
+	 * Indicates if the timer must increment or decrement time.
+	 * @default 'up'
+	 */
+	direction?: TimerDirection;
+
 	/**
 	 * The initial state value for resuming execution.
 	 * @default [false, 0, 0]
@@ -23,6 +30,11 @@ interface TimerEventData {
 }
 
 export class Timer extends Emittery<TimerEventData> {
+	/**
+	 * The current direction.
+	 */
+	readonly direction: TimerDirection;
+
 	/**
 	 * The current state.
 	 */

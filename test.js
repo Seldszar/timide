@@ -5,25 +5,25 @@ const {Timer} = require('.');
 
 let clock;
 
-test.before(() => {
+test.beforeEach(() => {
 	clock = sinon.useFakeTimers();
 });
 
-test.after(() => {
+test.afterEach(() => {
 	clock.restore();
 });
 
-test('should create a timer', t => {
+test.serial('should create a timer', t => {
 	const timer = new Timer();
 
 	t.is(timer.running, false);
 	t.is(timer.time, 0);
 });
 
-test('should advance by 1 second', t => {
-	const timer = new Timer();
-
-	timer.start();
+test.serial('should increment by 1 second', t => {
+	const timer = new Timer({
+		state: [true, 0, 0]
+	});
 
 	clock.tick(1000);
 
@@ -31,7 +31,7 @@ test('should advance by 1 second', t => {
 	t.is(timer.time, 1000);
 });
 
-test('should emit `time` event', async t => {
+test.serial('should emit `time` event', async t => {
 	const timer = new Timer({
 		state: [true, 0, 0]
 	});
@@ -45,7 +45,7 @@ test('should emit `time` event', async t => {
 	t.is(await promise, Date.now());
 });
 
-test('should emit `state` event', async t => {
+test.serial('should emit `state` event', async t => {
 	const timer = new Timer({
 		interval: Number.POSITIVE_INFINITY
 	});
@@ -59,7 +59,7 @@ test('should emit `state` event', async t => {
 	t.is(await promise, timer.state);
 });
 
-test('should emit `state` and `time` when stopped', async t => {
+test.serial('should emit `state` when stopped', async t => {
 	const timer = new Timer({
 		state: [true, 0, 0]
 	});
@@ -78,7 +78,7 @@ test('should emit `state` and `time` when stopped', async t => {
 	t.pass(await timePromise);
 });
 
-test('should reset the timer', t => {
+test.serial('should reset the timer', t => {
 	const timer = new Timer({
 		state: [false, 0, 1000]
 	});
@@ -89,7 +89,7 @@ test('should reset the timer', t => {
 	t.is(timer.time, 0);
 });
 
-test('should resume the timer', t => {
+test.serial('should resume the timer', t => {
 	const timer = new Timer({
 		state: [false, 0, 0]
 	});
@@ -100,7 +100,7 @@ test('should resume the timer', t => {
 	t.is(timer.time, Date.now());
 });
 
-test('should seek to 3 seconds', t => {
+test.serial('should seek to 3 seconds', t => {
 	const timer = new Timer({
 		state: [false, 0, 0]
 	});
@@ -109,4 +109,16 @@ test('should seek to 3 seconds', t => {
 
 	t.is(timer.running, false);
 	t.is(timer.time, 3000);
+});
+
+test.serial('should decrement by 1 second', t => {
+	const timer = new Timer({
+		state: [true, 0, 0],
+		direction: 'down'
+	});
+
+	clock.tick(1000);
+
+	t.is(timer.running, true);
+	t.is(timer.time, -1000);
 });
