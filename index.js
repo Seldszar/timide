@@ -2,23 +2,36 @@ const Emittery = require('emittery');
 
 const intervals = new WeakMap();
 
-function getTime(instance, absolute) {
+function getOrigin(instance) {
 	switch (instance.direction) {
 		case 'down':
-			return (absolute ? instance.state[1] - Date.now() : 0) - instance.state[2];
+			return instance.state[1] - Date.now();
 
 		case 'up':
-			return (absolute ? Date.now() - instance.state[1] : 0) + instance.state[2];
+			return Date.now() - instance.state[1];
 
 		default:
 			return 0;
 	}
 }
 
+function getDelta(instance, absolute) {
+	return (absolute ? getOrigin(instance) : 0) + instance.state[2];
+}
+
+function sameState(left, right) {
+	return left.every((value, index) => value === right[index]);
+}
+
 function updateState(instance, state) {
+	if (sameState(instance.state, state)) {
+		return;
+	}
+
 	instance.state = state;
 
 	dispatchState(instance);
+	dispatchRunning(instance);
 	dispatchTime(instance);
 }
 
@@ -58,6 +71,10 @@ function dispatchState(instance) {
 	instance.emit('state', instance.state);
 }
 
+function dispatchRunning(instance) {
+	instance.emit('running', instance.running);
+}
+
 function dispatchTime(instance) {
 	instance.emit('time', instance.time);
 }
@@ -68,7 +85,7 @@ class Timer extends Emittery {
 	}
 
 	get time() {
-		return getTime(this, this.running);
+		return getDelta(this, this.running);
 	}
 
 	constructor(options = {}) {
@@ -84,11 +101,11 @@ class Timer extends Emittery {
 	}
 
 	start(resume) {
-		this.replaceState([true, Date.now(), getTime(this, resume)]);
+		this.replaceState([true, Date.now(), getDelta(this, resume)]);
 	}
 
 	stop() {
-		this.replaceState([false, Date.now(), getTime(this, true)]);
+		this.replaceState([false, Date.now(), getDelta(this, true)]);
 	}
 
 	reset() {

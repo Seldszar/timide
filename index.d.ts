@@ -26,6 +26,7 @@ export interface TimerOptions {
 
 interface TimerEventData {
 	state: TimerState;
+	running: boolean;
 	time: number;
 }
 
