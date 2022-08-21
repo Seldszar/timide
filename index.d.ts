@@ -1,7 +1,7 @@
 import Emittery from 'emittery';
 
 export type TimerDirection = 'down' | 'up';
-export type TimerState = [boolean, number, number];
+export type TimerState = [running: boolean, date: number, offset: number];
 
 export interface TimerOptions {
 	/**
@@ -17,20 +17,16 @@ export interface TimerOptions {
 	state?: TimerState;
 
 	/**
-	 * The interval between each `time` events.
-	 * Passing `Infinity` will disable the ticker.
-	 * @default 100
+	 * Returns the current epoch.
 	 */
-	interval?: number;
+	now?(): number;
 }
 
-interface TimerEventData {
+interface EventData {
 	state: TimerState;
-	running: boolean;
-	time: number;
 }
 
-export class Timer extends Emittery<TimerEventData> {
+export class Timer extends Emittery<EventData> {
 	/**
 	 * The current direction.
 	 */
@@ -42,25 +38,31 @@ export class Timer extends Emittery<TimerEventData> {
 	readonly state: TimerState;
 
 	/**
-	 * The tick interval, in milliseconds.
+	 * Returns the current epoch.
 	 */
-	readonly interval: number;
+	now: () => number;
 
 	/**
 	 * Indicates if the timer is running.
 	 */
-	readonly running: boolean;
+	get running(): boolean;
 
 	/**
 	 * The current time.
 	 */
-	readonly time: number;
+	get time(): number;
 
 	/**
 	 * Creates a new timer.
 	 * @param options the timer options
 	 */
 	constructor(options?: TimerOptions);
+
+	/**
+	 * Updates the current state.
+	 * @param state the new state
+	 */
+	update(state: TimerState): void;
 
 	/**
 	 * Starts the timer.
@@ -83,10 +85,4 @@ export class Timer extends Emittery<TimerEventData> {
 	 * @param time the new time, in milliseconds
 	 */
 	seek(time: number): void;
-
-	/**
-	 * Replaces the current state.
-	 * @param state the new state
-	 */
-	replaceState(state: TimerState): void;
 }

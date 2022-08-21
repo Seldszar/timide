@@ -1,91 +1,12 @@
 const Emittery = require('emittery');
 
-const intervals = new WeakMap();
-
-function getOrigin(instance) {
-	switch (instance.direction) {
-		case 'down':
-			return instance.state[1] - Date.now();
-
-		case 'up':
-			return Date.now() - instance.state[1];
-
-		default:
-			return 0;
-	}
-}
-
-function getDelta(instance, absolute) {
-	return (absolute ? getOrigin(instance) : 0) + instance.state[2];
-}
-
-function sameState(left, right) {
-	return left.every((value, index) => value === right[index]);
-}
-
-function updateState(instance, state) {
-	if (sameState(instance.state, state)) {
-		return;
-	}
-
-	instance.state = state;
-
-	dispatchState(instance);
-	dispatchRunning(instance);
-	dispatchTime(instance);
-}
-
-function startTicker(instance) {
-	if (instance.interval === Number.POSITIVE_INFINITY || intervals.has(instance)) {
-		return;
-	}
-
-	const interval = setInterval(dispatchTime, instance.interval, instance);
-
-	if (typeof interval === 'object') {
-		interval.unref();
-	}
-
-	intervals.set(instance, interval);
-}
-
-function stopTicker(instance) {
-	const interval = intervals.get(instance);
-
-	if (interval) {
-		clearInterval(interval);
-	}
-
-	intervals.delete(instance);
-}
-
-function toggleTicker(instance, state) {
-	if (state[0] === instance.state[0]) {
-		return;
-	}
-
-	(state[0] ? startTicker : stopTicker)(instance);
-}
-
-function dispatchState(instance) {
-	instance.emit('state', instance.state);
-}
-
-function dispatchRunning(instance) {
-	instance.emit('running', instance.running);
-}
-
-function dispatchTime(instance) {
-	instance.emit('time', instance.time);
-}
-
 class Timer extends Emittery {
 	get running() {
 		return this.state[0];
 	}
 
 	get time() {
-		return getDelta(this, this.running);
+		return this.getDelta(this.running);
 	}
 
 	constructor(options = {}) {
@@ -93,33 +14,45 @@ class Timer extends Emittery {
 
 		this.direction = options.direction || 'up';
 		this.state = options.state || [false, 0, 0];
-		this.interval = options.interval || 100;
+		this.now = options.now || (() => Date.now());
+	}
 
-		if (this.running) {
-			startTicker(this);
-		}
+	update(state) {
+		this.emit('state', (this.state = state));
 	}
 
 	start(resume) {
-		this.replaceState([true, Date.now(), getDelta(this, resume)]);
+		this.update([true, this.now(), this.getDelta(resume)]);
 	}
 
 	stop() {
-		this.replaceState([false, Date.now(), getDelta(this, true)]);
+		this.update([false, this.now(), this.getDelta(true)]);
 	}
 
 	reset() {
-		this.replaceState([false, 0, 0]);
+		this.update([false, 0, 0]);
 	}
 
 	seek(time) {
-		this.replaceState([this.running, Date.now(), time]);
+		this.update([this.state[0], this.now(), time]);
 	}
 
-	replaceState(state) {
-		toggleTicker(this, state);
-		updateState(this, state);
+	getOrigin() {
+		switch (this.direction) {
+			case 'down':
+				return this.state[1] - this.now();
+
+			case 'up':
+				return this.now() - this.state[1];
+
+			default:
+				return 0;
+		}
+	}
+
+	getDelta(absolute) {
+		return (absolute ? this.getOrigin() : 0) + this.state[2];
 	}
 }
 
-exports.Timer = Timer;
+module.exports = {Timer};

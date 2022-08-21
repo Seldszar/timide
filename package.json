@@ -14,17 +14,16 @@
     "index.js"
   ],
   "dependencies": {
-    "emittery": "^0.8.1"
+    "emittery": "^0.12.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.1.1",
-    "@commitlint/config-conventional": "^12.1.1",
-    "ava": "^3.12.1",
-    "husky": "^6.0.0",
-    "lint-staged": "^10.2.11",
-    "semantic-release": "^17.1.1",
-    "sinon": "^10.0.1",
-    "xo": "^0.38.2"
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "ava": "^4.3.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "sinon": "^14.0.0",
+    "xo": "^0.51.0"
   },
   "commitlint": {
     "extends": [
@@ -33,5 +32,10 @@
   },
   "lint-staged": {
     "*.{js,ts}": "xo --fix"
+  },
+  "xo": {
+    "rules": {
+      "unicorn/prefer-module": "off"
+    }
   }
 }

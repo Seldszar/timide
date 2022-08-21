@@ -24,17 +24,10 @@ const {Timer} = require('timide');
 const timer = new Timer({
   // The initial state (default: `[false, 0, 0]`)
   state: [false, 1598126121368, -20000],
-
-  // The tick interval (default: `100`)
-  interval: 100,
 });
 
 timer.on('state', (value) => {
   // Emitted when the state changes
-});
-
-timer.on('time', (value) => {
-  // Emitted when the interval ticks or the state changes
 });
 
 // Starts the timer
